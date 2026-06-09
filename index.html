@@ -11,8 +11,6 @@
   <style>
     /* ============================================================
        CSS VARIABLES (Design Tokens)
-       Named slots for brand colors and fonts.
-       Change a color here = changes everywhere on the site.
     ============================================================ */
     :root {
       --pink:    #FFB3BA;
@@ -29,28 +27,36 @@
 
     /* ============================================================
        RESET & BASE
-       Removes browser default styles so we start clean.
-       box-sizing: border-box = padding is included in element width.
     ============================================================ */
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
     html { scroll-behavior: smooth; }
-    body { font-family: var(--font-body); background: var(--cream); color: var(--charcoal); line-height:1.6; }
+    body { font-family: var(--font-body); background: var(--cream); color: var(--charcoal); line-height:1.6; overflow-x: hidden; }
     img  { display:block; max-width:100%; }
     a    { text-decoration:none; color:inherit; }
 
     /* ============================================================
-       UTILITY CLASSES — reusable building blocks
+       UTILITY CLASSES & DIVIDERS
     ============================================================ */
-    .container     { max-width:1100px; margin:0 auto; padding:0 24px; }
-    .section       { padding:80px 0; }
+    .container     { max-width:1100px; margin:0 auto; padding:0 24px; position: relative; z-index: 2; }
+    .section       { padding:100px 0; position: relative; }
     .section-title { font-family:var(--font-display); font-size:clamp(1.8rem,4vw,2.6rem); color:var(--navy); text-align:center; margin-bottom:12px; }
     .section-subtitle { text-align:center; color:var(--charcoal); font-size:1.05rem; margin-bottom:48px; max-width:520px; margin-left:auto; margin-right:auto; }
     .title-underline { width:60px; height:4px; background:var(--coral); border-radius:2px; margin:10px auto 40px; }
 
+    /* Minimalist Wavy Dividers */
+    .wave-divider {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      overflow: hidden;
+      line-height: 0;
+    }
+    .wave-divider.top { top: -1px; }
+    .wave-divider.bottom { bottom: -1px; }
+    .wave-divider svg { display: block; width: 100%; height: 50px; }
+
     /* ============================================================
        BUTTONS
-       .btn-primary = filled coral (main actions)
-       .btn-outline = bordered (secondary actions)
     ============================================================ */
     .btn-primary {
       display:inline-block; background:var(--coral); color:var(--white);
@@ -69,7 +75,7 @@
     .btn-outline:hover { background:var(--coral); color:var(--white); transform:translateY(-2px); }
 
     /* ============================================================
-       NAVBAR — fixed at top, always visible while scrolling
+       NAVBAR
     ============================================================ */
     .navbar {
       position:fixed; top:0; left:0; right:0; z-index:1000;
@@ -86,24 +92,51 @@
     .nav-toggle span { display:block; width:24px; height:2px; background:var(--navy); border-radius:2px; transition:all 0.3s; }
 
     /* ============================================================
-       HERO — first thing visitors see
+       HERO (with Dynamic Animated Blobs)
     ============================================================ */
     .hero {
-      padding-top:140px; padding-bottom:100px;
+      padding-top:180px; padding-bottom:140px;
       background:linear-gradient(135deg, #fff0f2 0%, #ffe8d6 100%);
       text-align:center; position:relative; overflow:hidden;
     }
-    .hero::before {
-      content:''; position:absolute; width:400px; height:400px;
-      background:rgba(255,179,186,0.25); border-radius:50%;
-      top:-100px; left:-100px; pointer-events:none;
+    
+    /* Bouncing / Floating Blobs Setup */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0.45;
+      z-index: 1;
+      animation: floatAround 12s infinite ease-in-out alternate;
     }
-    .hero::after {
-      content:''; position:absolute; width:300px; height:300px;
-      background:rgba(255,107,107,0.12); border-radius:50%;
-      bottom:20px; right:-60px; pointer-events:none;
+    .blob-1 {
+      width: 300px; height: 300px;
+      background: var(--pink);
+      top: -50px; left: -50px;
+      animation-duration: 14s;
     }
-    .hero-content { position:relative; z-index:1; }
+    .blob-2 {
+      width: 250px; height: 250px;
+      background: var(--coral);
+      bottom: 40px; right: -40px;
+      animation-delay: -3s;
+      animation-duration: 11s;
+    }
+    .blob-3 {
+      width: 180px; height: 180px;
+      background: #FFE0B2;
+      top: 40%; left: 80%;
+      animation-delay: -6s;
+      animation-duration: 16s;
+    }
+
+    @keyframes floatAround {
+      0% { transform: translateY(0px) translateX(0px) scale(1); }
+      50% { transform: translateY(-30px) translateX(20px) scale(1.08); }
+      100% { transform: translateY(15px) translateX(-15px) scale(0.95); }
+    }
+
+    .hero-content { position:relative; z-index:5; }
     .hero-eyebrow {
       display:inline-block; background:var(--pink); color:var(--navy);
       font-size:0.82rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
@@ -114,7 +147,6 @@
     .hero-tagline { font-size:clamp(1rem,2.5vw,1.2rem); color:var(--charcoal); max-width:500px; margin:0 auto 14px; }
     .hero-note { font-size:0.88rem; color:#888; margin-bottom:36px; }
     .hero-cta { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
-    .hero-wave { position:absolute; bottom:-2px; left:0; width:100%; line-height:0; }
 
     /* ============================================================
        ABOUT
@@ -147,25 +179,9 @@
     .tab-btn:hover, .tab-btn.active { background:var(--navy); border-color:var(--navy); color:var(--white); }
     .menu-category { display:none; }
     .menu-category.active { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:24px; }
-    .menu-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; }
+    .menu-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; z-index: 5; }
     .menu-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(44,62,80,0.14); }
 
-    /* ============================================================
-       HOW TO ADD FOOD IMAGES TO MENU CARDS
-       ------------------------------------------------------------
-       Each .menu-card-image below is a colored placeholder.
-       To replace with a real photo:
-
-       1. Save your image (e.g. waffles.jpg) in the SAME folder as index.html
-       2. Find the card (search for the item name in this file)
-       3. Replace:
-            <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
-          With:
-            <div class="menu-card-image"><img src="waffles.jpg" alt="Waffles Pack" /></div>
-
-       Recommended image size: at least 600 x 400 pixels.
-       The image will automatically fill the space neatly.
-    ============================================================ */
     .menu-card-image { width:100%; height:200px; display:flex; align-items:center; justify-content:center; font-size:3rem; overflow:hidden; flex-shrink:0; }
     .menu-card-image img { width:100%; height:100%; object-fit:cover; }
     .menu-card-body { padding:20px; display:flex; flex-direction:column; flex:1; }
@@ -175,7 +191,7 @@
     .menu-card-desc { font-size:0.88rem; color:#777; margin-bottom:16px; line-height:1.5; flex:1; }
     .menu-card-note { font-size:0.78rem; color:var(--coral); font-weight:700; margin-bottom:12px; }
     .menu-card .btn-primary { width:100%; text-align:center; font-size:0.88rem; padding:10px; }
-    .preorder-notice { background:var(--navy); color:var(--white); text-align:center; padding:12px 24px; font-size:0.9rem; font-weight:700; border-radius:var(--radius); margin-bottom:36px; }
+    .preorder-notice { background:var(--navy); color:var(--white); text-align:center; padding:12px 24px; font-size:0.9rem; font-weight:700; border-radius:var(--radius); margin-bottom:36px; position: relative; z-index: 5; }
     .preorder-notice span { color:var(--pink); }
 
     /* ============================================================
@@ -183,7 +199,7 @@
     ============================================================ */
     .contact { background:var(--white); }
     .contact-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:24px; margin-top:8px; }
-    .contact-card { background:var(--cream); border-radius:var(--radius); padding:32px 24px; text-align:center; border:1.5px solid var(--pink); transition:transform 0.2s, box-shadow 0.2s; }
+    .contact-card { background:var(--cream); border-radius:var(--radius); padding:32px 24px; text-align:center; border:1.5px solid var(--pink); transition:transform 0.2s, box-shadow 0.2s; z-index: 5; }
     .contact-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
     .contact-icon { width:56px; height:56px; border-radius:50%; background:var(--pink); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.5rem; }
     .contact-card h3 { font-family:var(--font-display); font-size:1rem; color:var(--navy); margin-bottom:6px; }
@@ -192,7 +208,7 @@
     /* ============================================================
        FOOTER
     ============================================================ */
-    footer { background:var(--navy); color:rgba(255,255,255,0.75); text-align:center; padding:36px 24px; }
+    footer { background:var(--navy); color:rgba(255,255,255,0.75); text-align:center; padding:60px 24px 36px; position: relative; }
     footer .footer-logo { height:40px; margin:0 auto 12px; filter:brightness(0) invert(1); }
     footer p { font-size:0.88rem; margin-bottom:4px; }
     footer .footer-love { color:var(--pink); }
@@ -211,27 +227,17 @@
       .nav-links a { display:block; padding:12px 24px; font-size:1rem; }
       .nav-toggle { display:flex; }
       .about-grid { grid-template-columns:1fr; gap:32px; }
-      .hero { padding-top:110px; padding-bottom:80px; }
-      .section { padding:56px 0; }
+      .hero { padding-top:140px; padding-bottom:100px; }
+      .section { padding:70px 0; }
+      .wave-divider svg { height: 30px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- ============================================================
-       NAVBAR
-       Logo links to top. Nav links jump to sections on the page
-       using #id anchors (e.g. #menu scrolls to the menu section).
-  ============================================================ -->
   <nav class="navbar">
     <div class="container">
       <a href="#hero" class="nav-logo">
-        <!--
-        HOW TO ADD YOUR LOGO:
-        1. Put logo.png in the same folder as index.html
-        2. The <img> tag below will load it automatically.
-           The onerror fallback shows the text name if image fails.
-        -->
         <img src="logo.png" alt="Cafe Joy"
              onerror="this.style.display='none'; document.getElementById('logoText').style.display='block'" />
         <span id="logoText" class="nav-logo-text" style="display:none">Cafe Joy</span>
@@ -256,10 +262,11 @@
   </nav>
 
 
-  <!-- ============================================================
-       HERO SECTION — the first impression
-  ============================================================ -->
   <section class="hero" id="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
     <div class="container hero-content">
       <span class="hero-eyebrow">📍 Karshi, Abuja — Pre-orders Welcome</span>
       <h1>Taste the <span>Joy</span><br/>in Every Bite</h1>
@@ -274,27 +281,19 @@
            target="_blank" class="btn-outline">WhatsApp Us</a>
       </div>
     </div>
-    <div class="hero-wave">
-      <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#FFFFFF"/>
+
+    <div class="wave-divider bottom">
+      <svg viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,32 C240,70 480,70 720,32 C960,-6 1200,-6 1440,32 L1440,74 L0,74 Z" fill="#FFFFFF"/>
       </svg>
     </div>
   </section>
 
 
-  <!-- ============================================================
-       ABOUT SECTION
-  ============================================================ -->
   <section class="about section" id="about">
     <div class="container">
       <div class="about-grid">
 
-        <!--
-        HOW TO ADD YOUR ABOUT PHOTO:
-        Replace the div below with:
-        <img src="about-photo.jpg" alt="Cafe Joy kitchen" class="about-image" />
-        Put about-photo.jpg in the same folder as index.html.
-        -->
         <div class="about-image">
           📸 Add your photo here
         </div>
@@ -321,19 +320,20 @@
             <span class="badge">📦 Neatly Packaged</span>
             <span class="badge">❤️ Made with Love</span>
             <span class="badge">📍 Karu–Karshi</span>
+            <span class="badge" style="border-color: var(--coral); background: #fff5f5;">🛡️ CAC Registered</span>
           </div>
         </div>
       </div>
     </div>
+
+    <div class="wave-divider bottom">
+      <svg viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,42 C240,10 480,10 720,42 C960,74 1200,74 1440,42 L1440,74 L0,74 Z" fill="#FDF6E3"/>
+      </svg>
+    </div>
   </section>
 
 
-  <!-- ============================================================
-       MENU SECTION
-       Tab buttons switch between categories.
-       Each "Order Now" button opens WhatsApp with a pre-filled
-       message containing the item name.
-  ============================================================ -->
   <section class="menu section" id="menu">
     <div class="container">
       <h2 class="section-title">Our Menu</h2>
@@ -353,11 +353,8 @@
       </div>
 
 
-      <!-- ── BREAKFAST ── -->
       <div class="menu-category active" id="tab-breakfast">
-
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-regular.jpg" alt="Waffles Pack Regular"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -370,7 +367,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pancakes-regular.jpg" alt="Pancakes Pack Regular"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🥞</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -383,7 +379,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-large.jpg" alt="Waffles Pack Large"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🧇</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -396,7 +391,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pancakes-large.jpg" alt="Pancakes Pack Large"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🥞</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -407,15 +401,8 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Pancakes%20Pack%20(Large)%20-%20%E2%82%A66%2C000" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
-
-      </div><!-- /breakfast -->
-
-
-      <!-- ── TREATS ── -->
-      <div class="menu-category" id="tab-treats">
-
+      </div><div class="menu-category" id="tab-treats">
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="mini-donuts.jpg" alt="Mini Donuts"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🍩</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -428,7 +415,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cake-parfait.jpg" alt="Cake Parfait"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🍰</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -441,7 +427,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="foil-cakes.jpg" alt="Plain Foil Cakes"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🎂</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -454,7 +439,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="foil-cake-toppings.jpg" alt="Foil Cake with Toppings"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🎂</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -467,7 +451,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-toppings.jpg" alt="Waffles with Toppings"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -480,7 +463,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="mini-cookies.jpg" alt="Mini Choc Chip Cookies"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🍪</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -493,7 +475,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="big-cookies.jpg" alt="Big Chocolate Chip Cookies"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🍪</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -506,7 +487,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="doughnuts.jpg" alt="Glazed Doughnuts"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🍩</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -517,15 +497,8 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Doughnuts%20(Glazed)" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
-
-      </div><!-- /treats -->
-
-
-      <!-- ── MAINS ── -->
-      <div class="menu-category" id="tab-mains">
-
+      </div><div class="menu-category" id="tab-mains">
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pasta-sausage.jpg" alt="Pasta with Sausage"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🍝</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -538,7 +511,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pasta-chicken.jpg" alt="Pasta with Chicken"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🍝</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -551,7 +523,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="yam-pepper.jpg" alt="Yam and Pepper Sauce"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🍠</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -564,7 +535,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="beef-penne.jpg" alt="Beef Penne Pasta"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🍝</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -577,7 +547,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="rice-steak.jpg" alt="Rice and Peppered Steak"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🥩</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -588,15 +557,8 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Rice%20and%20Peppered%20Steak%20-%20%E2%82%A64%2C000" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
-
-      </div><!-- /mains -->
-
-
-      <!-- ── DRINKS ── -->
-      <div class="menu-category" id="tab-drinks">
-
+      </div><div class="menu-category" id="tab-drinks">
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="zobo.jpg" alt="Zobo"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🍹</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -609,7 +571,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cocktail.jpg" alt="Cocktail"/></div> -->
           <div class="menu-card-image" style="background:#FF6B6B;"><span>🍸</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -622,7 +583,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="yogurt.jpg" alt="Yogurt"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🥛</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -638,7 +598,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="milkshake.jpg" alt="Milkshake"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🥤</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -652,15 +611,8 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Milkshake" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
-
-      </div><!-- /drinks -->
-
-
-      <!-- ── SANDWICHES & WRAPS ── -->
-      <div class="menu-category" id="tab-wraps">
-
+      </div><div class="menu-category" id="tab-wraps">
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="breakfast-sandwich.jpg" alt="Breakfast Sandwich"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🥪</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -673,7 +625,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="breakfast-wrap.jpg" alt="Breakfast Wrap"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🌯</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -686,7 +637,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cheesesteak.jpg" alt="Cheesesteak"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🥩</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -699,7 +649,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="shawarma-beef.jpg" alt="Shawarma Beef"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🌯</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -715,7 +664,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="shawarma-chicken.jpg" alt="Shawarma Chicken"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>🌯</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -729,15 +677,8 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Shawarma%20(Chicken)" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
-
-      </div><!-- /wraps -->
-
-
-      <!-- ── CUSTOM CAKES ── -->
-      <div class="menu-category" id="tab-cakes">
-
+      </div><div class="menu-category" id="tab-cakes">
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="bento-cake.jpg" alt="Bento Cake"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>🎂</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -754,7 +695,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="6inch-round.jpg" alt="6 Inch Round Cake"/></div> -->
           <div class="menu-card-image" style="background:#FFE0B2;"><span>🎂</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -768,7 +708,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="7inch-round.jpg" alt="7 Inch Round Cake"/></div> -->
           <div class="menu-card-image" style="background:#FFCCBC;"><span>🎂</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -782,7 +721,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="6inch-heart.jpg" alt="6 Inch Heart Cake"/></div> -->
           <div class="menu-card-image" style="background:#F8BBD0;"><span>💝</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -796,7 +734,6 @@
         </div>
 
         <div class="menu-card">
-          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="8inch-heart.jpg" alt="8 Inch Heart Cake"/></div> -->
           <div class="menu-card-image" style="background:#FFB3BA;"><span>💝</span></div>
           <div class="menu-card-body">
             <div class="menu-card-header">
@@ -808,16 +745,16 @@
             <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%208%20Inch%20Heart%20Cake" target="_blank" class="btn-primary">Order Now</a>
           </div>
         </div>
+      </div></div>
 
-      </div><!-- /cakes -->
-
+    <div class="wave-divider bottom">
+      <svg viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,32 C240,70 480,70 720,32 C960,-6 1200,-6 1440,32 L1440,74 L0,74 Z" fill="#FFFFFF"/>
+      </svg>
     </div>
   </section>
 
 
-  <!-- ============================================================
-       CONTACT SECTION
-  ============================================================ -->
   <section class="contact section" id="contact">
     <div class="container">
       <h2 class="section-title">Get in Touch</h2>
@@ -850,12 +787,15 @@
 
       </div>
     </div>
+
+    <div class="wave-divider bottom">
+      <svg viewBox="0 0 1440 74" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,42 C240,10 480,10 720,42 C960,74 1200,74 1440,42 L1440,74 L0,74 Z" fill="#2C3E50"/>
+      </svg>
+    </div>
   </section>
 
 
-  <!-- ============================================================
-       FOOTER
-  ============================================================ -->
   <footer>
     <img src="logo.png" alt="Cafe Joy" class="footer-logo" onerror="this.style.display='none'" />
     <p style="font-family:'Paytone One',sans-serif; font-size:1.1rem; color:white; margin-bottom:6px;">Cafe Joy</p>
@@ -864,21 +804,6 @@
   </footer>
 
 
-  <!--
-  ============================================================
-  JAVASCRIPT — two small features
-
-  1. HAMBURGER MENU (mobile only)
-     Toggles the "open" class on #navLinks when the button is clicked.
-     The CSS shows/hides the menu based on whether that class exists.
-
-  2. MENU TABS
-     Each tab button has a data-tab="breakfast" attribute.
-     Clicking it removes .active from everything, then adds .active
-     to the button AND to the matching div with id="tab-breakfast".
-     The CSS hides all .menu-category divs except the one with .active.
-  ============================================================
-  -->
   <script>
     // Hamburger menu
     const navToggle = document.getElementById('navToggle');
