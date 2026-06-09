@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cafe Joy — Taste the Joy in Every Bite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=Paytone+One&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       CSS VARIABLES (Design Tokens)
+       Named slots for brand colors and fonts.
+       Change a color here = changes everywhere on the site.
+    ============================================================ */
+    :root {
+      --pink:    #FFB3BA;
+      --coral:   #FF6B6B;
+      --cream:   #FDF6E3;
+      --charcoal:#4A4A4A;
+      --navy:    #2C3E50;
+      --white:   #FFFFFF;
+      --font-display: 'Paytone One', sans-serif;
+      --font-body:    'Nunito', sans-serif;
+      --radius: 16px;
+      --shadow: 0 4px 24px rgba(44,62,80,0.10);
+    }
+
+    /* ============================================================
+       RESET & BASE
+       Removes browser default styles so we start clean.
+       box-sizing: border-box = padding is included in element width.
+    ============================================================ */
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); background: var(--cream); color: var(--charcoal); line-height:1.6; }
+    img  { display:block; max-width:100%; }
+    a    { text-decoration:none; color:inherit; }
+
+    /* ============================================================
+       UTILITY CLASSES — reusable building blocks
+    ============================================================ */
+    .container     { max-width:1100px; margin:0 auto; padding:0 24px; }
+    .section       { padding:80px 0; }
+    .section-title { font-family:var(--font-display); font-size:clamp(1.8rem,4vw,2.6rem); color:var(--navy); text-align:center; margin-bottom:12px; }
+    .section-subtitle { text-align:center; color:var(--charcoal); font-size:1.05rem; margin-bottom:48px; max-width:520px; margin-left:auto; margin-right:auto; }
+    .title-underline { width:60px; height:4px; background:var(--coral); border-radius:2px; margin:10px auto 40px; }
+
+    /* ============================================================
+       BUTTONS
+       .btn-primary = filled coral (main actions)
+       .btn-outline = bordered (secondary actions)
+    ============================================================ */
+    .btn-primary {
+      display:inline-block; background:var(--coral); color:var(--white);
+      font-family:var(--font-body); font-weight:800; font-size:0.95rem;
+      padding:12px 28px; border-radius:50px; border:none; cursor:pointer;
+      transition:background 0.2s, transform 0.15s; letter-spacing:0.3px;
+    }
+    .btn-primary:hover { background:#e85555; transform:translateY(-2px); }
+
+    .btn-outline {
+      display:inline-block; background:transparent; color:var(--coral);
+      font-family:var(--font-body); font-weight:800; font-size:0.95rem;
+      padding:11px 28px; border-radius:50px; border:2px solid var(--coral); cursor:pointer;
+      transition:background 0.2s, color 0.2s, transform 0.15s;
+    }
+    .btn-outline:hover { background:var(--coral); color:var(--white); transform:translateY(-2px); }
+
+    /* ============================================================
+       NAVBAR — fixed at top, always visible while scrolling
+    ============================================================ */
+    .navbar {
+      position:fixed; top:0; left:0; right:0; z-index:1000;
+      background:rgba(253,246,227,0.95); backdrop-filter:blur(8px);
+      border-bottom:1px solid rgba(255,179,186,0.3); padding:14px 0;
+    }
+    .navbar .container { display:flex; align-items:center; justify-content:space-between; }
+    .nav-logo img { height:48px; width:auto; }
+    .nav-logo-text { font-family:var(--font-display); font-size:1.4rem; color:var(--navy); }
+    .nav-links { display:flex; align-items:center; gap:32px; list-style:none; }
+    .nav-links a { font-weight:700; font-size:0.95rem; color:var(--navy); transition:color 0.2s; }
+    .nav-links a:hover { color:var(--coral); }
+    .nav-toggle { display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none; padding:4px; }
+    .nav-toggle span { display:block; width:24px; height:2px; background:var(--navy); border-radius:2px; transition:all 0.3s; }
+
+    /* ============================================================
+       HERO — first thing visitors see
+    ============================================================ */
+    .hero {
+      padding-top:140px; padding-bottom:100px;
+      background:linear-gradient(135deg, #fff0f2 0%, #ffe8d6 100%);
+      text-align:center; position:relative; overflow:hidden;
+    }
+    .hero::before {
+      content:''; position:absolute; width:400px; height:400px;
+      background:rgba(255,179,186,0.25); border-radius:50%;
+      top:-100px; left:-100px; pointer-events:none;
+    }
+    .hero::after {
+      content:''; position:absolute; width:300px; height:300px;
+      background:rgba(255,107,107,0.12); border-radius:50%;
+      bottom:20px; right:-60px; pointer-events:none;
+    }
+    .hero-content { position:relative; z-index:1; }
+    .hero-eyebrow {
+      display:inline-block; background:var(--pink); color:var(--navy);
+      font-size:0.82rem; font-weight:800; letter-spacing:1.5px; text-transform:uppercase;
+      padding:6px 18px; border-radius:50px; margin-bottom:20px;
+    }
+    .hero h1 { font-family:var(--font-display); font-size:clamp(2.4rem,7vw,4.2rem); color:var(--navy); line-height:1.15; margin-bottom:18px; }
+    .hero h1 span { color:var(--coral); }
+    .hero-tagline { font-size:clamp(1rem,2.5vw,1.2rem); color:var(--charcoal); max-width:500px; margin:0 auto 14px; }
+    .hero-note { font-size:0.88rem; color:#888; margin-bottom:36px; }
+    .hero-cta { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+    .hero-wave { position:absolute; bottom:-2px; left:0; width:100%; line-height:0; }
+
+    /* ============================================================
+       ABOUT
+    ============================================================ */
+    .about { background:var(--white); }
+    .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+    .about-image {
+      border-radius:var(--radius); overflow:hidden; box-shadow:var(--shadow);
+      aspect-ratio:4/3; background:var(--pink);
+      display:flex; align-items:center; justify-content:center;
+      font-size:0.9rem; color:var(--navy); font-weight:700; text-align:center; padding:20px;
+    }
+    .about-image img { width:100%; height:100%; object-fit:cover; }
+    .about-text h2 { font-family:var(--font-display); font-size:clamp(1.6rem,3vw,2.2rem); color:var(--navy); margin-bottom:8px; }
+    .about-accent { width:48px; height:4px; background:var(--coral); border-radius:2px; margin-bottom:20px; }
+    .about-text p { margin-bottom:16px; font-size:1.02rem; line-height:1.75; }
+    .about-badges { display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
+    .badge { background:var(--cream); border:1.5px solid var(--pink); color:var(--navy); font-weight:700; font-size:0.82rem; padding:6px 14px; border-radius:50px; }
+
+    /* ============================================================
+       MENU
+    ============================================================ */
+    .menu { background:var(--cream); }
+    .menu-tabs { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-bottom:40px; }
+    .tab-btn {
+      background:var(--white); border:2px solid var(--pink); color:var(--navy);
+      font-family:var(--font-body); font-weight:700; font-size:0.88rem;
+      padding:8px 20px; border-radius:50px; cursor:pointer; transition:all 0.2s;
+    }
+    .tab-btn:hover, .tab-btn.active { background:var(--navy); border-color:var(--navy); color:var(--white); }
+    .menu-category { display:none; }
+    .menu-category.active { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:24px; }
+    .menu-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; transition:transform 0.2s, box-shadow 0.2s; display:flex; flex-direction:column; }
+    .menu-card:hover { transform:translateY(-4px); box-shadow:0 8px 32px rgba(44,62,80,0.14); }
+
+    /* ============================================================
+       HOW TO ADD FOOD IMAGES TO MENU CARDS
+       ------------------------------------------------------------
+       Each .menu-card-image below is a colored placeholder.
+       To replace with a real photo:
+
+       1. Save your image (e.g. waffles.jpg) in the SAME folder as index.html
+       2. Find the card (search for the item name in this file)
+       3. Replace:
+            <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
+          With:
+            <div class="menu-card-image"><img src="waffles.jpg" alt="Waffles Pack" /></div>
+
+       Recommended image size: at least 600 x 400 pixels.
+       The image will automatically fill the space neatly.
+    ============================================================ */
+    .menu-card-image { width:100%; height:200px; display:flex; align-items:center; justify-content:center; font-size:3rem; overflow:hidden; flex-shrink:0; }
+    .menu-card-image img { width:100%; height:100%; object-fit:cover; }
+    .menu-card-body { padding:20px; display:flex; flex-direction:column; flex:1; }
+    .menu-card-header { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px; }
+    .menu-card-name { font-family:var(--font-display); font-size:1.05rem; color:var(--navy); line-height:1.3; }
+    .menu-card-price { font-weight:800; color:var(--coral); font-size:1rem; white-space:nowrap; }
+    .menu-card-desc { font-size:0.88rem; color:#777; margin-bottom:16px; line-height:1.5; flex:1; }
+    .menu-card-note { font-size:0.78rem; color:var(--coral); font-weight:700; margin-bottom:12px; }
+    .menu-card .btn-primary { width:100%; text-align:center; font-size:0.88rem; padding:10px; }
+    .preorder-notice { background:var(--navy); color:var(--white); text-align:center; padding:12px 24px; font-size:0.9rem; font-weight:700; border-radius:var(--radius); margin-bottom:36px; }
+    .preorder-notice span { color:var(--pink); }
+
+    /* ============================================================
+       CONTACT
+    ============================================================ */
+    .contact { background:var(--white); }
+    .contact-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px,1fr)); gap:24px; margin-top:8px; }
+    .contact-card { background:var(--cream); border-radius:var(--radius); padding:32px 24px; text-align:center; border:1.5px solid var(--pink); transition:transform 0.2s, box-shadow 0.2s; }
+    .contact-card:hover { transform:translateY(-4px); box-shadow:var(--shadow); }
+    .contact-icon { width:56px; height:56px; border-radius:50%; background:var(--pink); display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:1.5rem; }
+    .contact-card h3 { font-family:var(--font-display); font-size:1rem; color:var(--navy); margin-bottom:6px; }
+    .contact-card p { font-size:0.9rem; color:#777; margin-bottom:16px; }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer { background:var(--navy); color:rgba(255,255,255,0.75); text-align:center; padding:36px 24px; }
+    footer .footer-logo { height:40px; margin:0 auto 12px; filter:brightness(0) invert(1); }
+    footer p { font-size:0.88rem; margin-bottom:4px; }
+    footer .footer-love { color:var(--pink); }
+
+    /* ============================================================
+       RESPONSIVE — MOBILE (screens 768px and narrower)
+    ============================================================ */
+    @media (max-width: 768px) {
+      .nav-links {
+        display:none; flex-direction:column; gap:0;
+        position:absolute; top:100%; left:0; right:0;
+        background:var(--cream); border-bottom:1px solid var(--pink); padding:12px 0;
+      }
+      .nav-links.open { display:flex; }
+      .nav-links li { width:100%; }
+      .nav-links a { display:block; padding:12px 24px; font-size:1rem; }
+      .nav-toggle { display:flex; }
+      .about-grid { grid-template-columns:1fr; gap:32px; }
+      .hero { padding-top:110px; padding-bottom:80px; }
+      .section { padding:56px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVBAR
+       Logo links to top. Nav links jump to sections on the page
+       using #id anchors (e.g. #menu scrolls to the menu section).
+  ============================================================ -->
+  <nav class="navbar">
+    <div class="container">
+      <a href="#hero" class="nav-logo">
+        <!--
+        HOW TO ADD YOUR LOGO:
+        1. Put logo.png in the same folder as index.html
+        2. The <img> tag below will load it automatically.
+           The onerror fallback shows the text name if image fails.
+        -->
+        <img src="logo.png" alt="Cafe Joy"
+             onerror="this.style.display='none'; document.getElementById('logoText').style.display='block'" />
+        <span id="logoText" class="nav-logo-text" style="display:none">Cafe Joy</span>
+      </a>
+
+      <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about">About</a></li>
+        <li><a href="#menu">Menu</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li>
+          <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20place%20a%20pre-order."
+             target="_blank" class="btn-primary" style="padding:9px 20px;font-size:0.88rem;">
+            Order Now
+          </a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <!-- ============================================================
+       HERO SECTION — the first impression
+  ============================================================ -->
+  <section class="hero" id="hero">
+    <div class="container hero-content">
+      <span class="hero-eyebrow">📍 Karshi, Abuja — Pre-orders Welcome</span>
+      <h1>Taste the <span>Joy</span><br/>in Every Bite</h1>
+      <p class="hero-tagline">
+        Homemade waffles, pastries, mains, cakes and more —
+        crafted with love and delivered to your door.
+      </p>
+      <p class="hero-note">⏰ Pre-orders only · Place yours at least 24 hours ahead</p>
+      <div class="hero-cta">
+        <a href="#menu" class="btn-primary">Browse the Menu</a>
+        <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20place%20a%20pre-order."
+           target="_blank" class="btn-outline">WhatsApp Us</a>
+      </div>
+    </div>
+    <div class="hero-wave">
+      <svg viewBox="0 0 1440 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+        <path d="M0,30 C360,60 1080,0 1440,30 L1440,60 L0,60 Z" fill="#FFFFFF"/>
+      </svg>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       ABOUT SECTION
+  ============================================================ -->
+  <section class="about section" id="about">
+    <div class="container">
+      <div class="about-grid">
+
+        <!--
+        HOW TO ADD YOUR ABOUT PHOTO:
+        Replace the div below with:
+        <img src="about-photo.jpg" alt="Cafe Joy kitchen" class="about-image" />
+        Put about-photo.jpg in the same folder as index.html.
+        -->
+        <div class="about-image">
+          📸 Add your photo here
+        </div>
+
+        <div class="about-text">
+          <h2>The Joy Behind the Food</h2>
+          <div class="about-accent"></div>
+          <p>
+            Cafe Joy was born from a simple need. When I first moved to Karshi with my family,
+            I found myself constantly searching for sweet treats, tasty bites, and great food —
+            and coming up empty every time.
+          </p>
+          <p>
+            So I took matters into my own hands. I trained myself, picked up skills in baking
+            and cooking, and started making the things I craved — for myself, for family, for
+            friends. The feedback was overwhelming. "You should sell this." So I did.
+          </p>
+          <p>
+            Today, Cafe Joy is the business I once looked for — delivering delicious,
+            neatly packaged food with genuine care and great service to the Karu-Karshi axis.
+          </p>
+          <div class="about-badges">
+            <span class="badge">🏠 Home-based</span>
+            <span class="badge">📦 Neatly Packaged</span>
+            <span class="badge">❤️ Made with Love</span>
+            <span class="badge">📍 Karu–Karshi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       MENU SECTION
+       Tab buttons switch between categories.
+       Each "Order Now" button opens WhatsApp with a pre-filled
+       message containing the item name.
+  ============================================================ -->
+  <section class="menu section" id="menu">
+    <div class="container">
+      <h2 class="section-title">Our Menu</h2>
+      <div class="title-underline"></div>
+
+      <div class="preorder-notice">
+        ⏰ All orders are <span>pre-orders only</span> — place your order at least <span>24 hours in advance</span>
+      </div>
+
+      <div class="menu-tabs">
+        <button class="tab-btn active" data-tab="breakfast">Breakfast</button>
+        <button class="tab-btn" data-tab="treats">Treats</button>
+        <button class="tab-btn" data-tab="mains">Mains</button>
+        <button class="tab-btn" data-tab="drinks">Drinks</button>
+        <button class="tab-btn" data-tab="wraps">Sandwiches & Wraps</button>
+        <button class="tab-btn" data-tab="cakes">Custom Cakes</button>
+      </div>
+
+
+      <!-- ── BREAKFAST ── -->
+      <div class="menu-category active" id="tab-breakfast">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-regular.jpg" alt="Waffles Pack Regular"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Waffles Pack (Regular)</span>
+              <span class="menu-card-price">₦3,500</span>
+            </div>
+            <p class="menu-card-desc">4 waffles, 2 sausages, rolled egg omelette with a cup of syrup.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Waffles%20Pack%20(Regular)%20-%20%E2%82%A63%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pancakes-regular.jpg" alt="Pancakes Pack Regular"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🥞</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Pancakes Pack (Regular)</span>
+              <span class="menu-card-price">₦3,500</span>
+            </div>
+            <p class="menu-card-desc">4 pancakes, 2 sausages, rolled egg omelette with a cup of syrup.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Pancakes%20Pack%20(Regular)%20-%20%E2%82%A63%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-large.jpg" alt="Waffles Pack Large"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🧇</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Waffles Pack (Large)</span>
+              <span class="menu-card-price">₦6,000</span>
+            </div>
+            <p class="menu-card-desc">7 waffles, 3 sausages, rolled egg omelette with a cup of syrup.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Waffles%20Pack%20(Large)%20-%20%E2%82%A66%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pancakes-large.jpg" alt="Pancakes Pack Large"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🥞</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Pancakes Pack (Large)</span>
+              <span class="menu-card-price">₦6,000</span>
+            </div>
+            <p class="menu-card-desc">7 pancakes, 3 sausages, rolled egg omelette with a cup of syrup.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Pancakes%20Pack%20(Large)%20-%20%E2%82%A66%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /breakfast -->
+
+
+      <!-- ── TREATS ── -->
+      <div class="menu-category" id="tab-treats">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="mini-donuts.jpg" alt="Mini Donuts"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🍩</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Mini Donuts</span>
+              <span class="menu-card-price">₦2,000</span>
+            </div>
+            <p class="menu-card-desc">Sweet, bite-sized mini donuts — perfect as a snack or treat.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Mini%20Donuts%20-%20%E2%82%A62%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cake-parfait.jpg" alt="Cake Parfait"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🍰</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Cake Parfait</span>
+              <span class="menu-card-price">₦2,000</span>
+            </div>
+            <p class="menu-card-desc">Layers of cake and cream in a beautiful parfait cup.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Cake%20Parfait%20-%20%E2%82%A62%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="foil-cakes.jpg" alt="Plain Foil Cakes"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🎂</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Plain Foil Cakes</span>
+              <span class="menu-card-price">₦800 – ₦1,500</span>
+            </div>
+            <p class="menu-card-desc">Small — ₦800 &nbsp;|&nbsp; Big — ₦1,500</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Plain%20Foil%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="foil-cake-toppings.jpg" alt="Foil Cake with Toppings"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🎂</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Foil Cake with Toppings</span>
+              <span class="menu-card-price">₦3,500</span>
+            </div>
+            <p class="menu-card-desc">Our signature foil cake dressed up with your choice of toppings.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Foil%20Cake%20with%20Toppings%20-%20%E2%82%A63%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="waffles-toppings.jpg" alt="Waffles with Toppings"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🧇</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Waffles with Toppings</span>
+              <span class="menu-card-price">₦2,000</span>
+            </div>
+            <p class="menu-card-desc">Crispy waffles loaded with your favourite toppings.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Waffles%20with%20Toppings%20-%20%E2%82%A62%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="mini-cookies.jpg" alt="Mini Choc Chip Cookies"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🍪</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Mini Choc. Chip Cookies</span>
+              <span class="menu-card-price">₦2,500</span>
+            </div>
+            <p class="menu-card-desc">Perfectly baked mini cookies packed with chocolate chips.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Mini%20Choc.%20Chip%20Cookies%20-%20%E2%82%A62%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="big-cookies.jpg" alt="Big Chocolate Chip Cookies"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🍪</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Big Chocolate Chip Cookies</span>
+              <span class="menu-card-price">₦2,000 – ₦3,800</span>
+            </div>
+            <p class="menu-card-desc">3 pieces — ₦2,000 &nbsp;|&nbsp; 6 pieces — ₦3,800</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Big%20Chocolate%20Chip%20Cookies" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="doughnuts.jpg" alt="Glazed Doughnuts"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🍩</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Doughnuts (Glazed Only)</span>
+              <span class="menu-card-price">₦2,500 – ₦9,000</span>
+            </div>
+            <p class="menu-card-desc">Box of 3 — ₦2,500 &nbsp;|&nbsp; Box of 6 — ₦4,500 &nbsp;|&nbsp; Box of 12 — ₦9,000</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Doughnuts%20(Glazed)" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /treats -->
+
+
+      <!-- ── MAINS ── -->
+      <div class="menu-category" id="tab-mains">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pasta-sausage.jpg" alt="Pasta with Sausage"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🍝</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Pasta with Sausage</span>
+              <span class="menu-card-price">₦2,500</span>
+            </div>
+            <p class="menu-card-desc">Stir-fried spaghetti with veggies and two sausages.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Pasta%20with%20Sausage%20-%20%E2%82%A62%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="pasta-chicken.jpg" alt="Pasta with Chicken"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🍝</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Pasta with Chicken</span>
+              <span class="menu-card-price">₦3,500</span>
+            </div>
+            <p class="menu-card-desc">Stir-fried spaghetti with veggies and peppered chicken.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Pasta%20with%20Chicken%20-%20%E2%82%A63%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="yam-pepper.jpg" alt="Yam and Pepper Sauce"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🍠</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Yam and Pepper Sauce</span>
+              <span class="menu-card-price">₦3,000</span>
+            </div>
+            <p class="menu-card-desc">Fried yam and spicy pepper sauce with fish.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Yam%20and%20Pepper%20Sauce%20-%20%E2%82%A63%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="beef-penne.jpg" alt="Beef Penne Pasta"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🍝</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Beef Penne Pasta</span>
+              <span class="menu-card-price">₦4,000</span>
+            </div>
+            <p class="menu-card-desc">Stir-fried penne pasta with thinly cut beef and veggies.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Beef%20Penne%20Pasta%20-%20%E2%82%A64%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="rice-steak.jpg" alt="Rice and Peppered Steak"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🥩</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Rice and Peppered Steak</span>
+              <span class="menu-card-price">₦4,000</span>
+            </div>
+            <p class="menu-card-desc">White rice and sliced beef steak cooked with sliced bell peppers.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Rice%20and%20Peppered%20Steak%20-%20%E2%82%A64%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /mains -->
+
+
+      <!-- ── DRINKS ── -->
+      <div class="menu-category" id="tab-drinks">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="zobo.jpg" alt="Zobo"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🍹</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Zobo</span>
+              <span class="menu-card-price">₦1,000</span>
+            </div>
+            <p class="menu-card-desc">Refreshing homemade zobo drink.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Zobo%20-%20%E2%82%A61%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cocktail.jpg" alt="Cocktail"/></div> -->
+          <div class="menu-card-image" style="background:#FF6B6B;"><span>🍸</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Cocktail</span>
+              <span class="menu-card-price">₦2,000</span>
+            </div>
+            <p class="menu-card-desc">A refreshing house cocktail blend.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Cocktail%20-%20%E2%82%A62%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="yogurt.jpg" alt="Yogurt"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🥛</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Yogurt</span>
+              <span class="menu-card-price">₦1,200 – ₦3,500</span>
+            </div>
+            <p class="menu-card-desc">
+              Vanilla / Strawberry / Banana — ₦1,200 &nbsp;|&nbsp; Coconut — ₦1,500<br/>
+              Small Parfait — ₦2,000 &nbsp;|&nbsp; Big Parfait — ₦3,500
+            </p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Yogurt" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="milkshake.jpg" alt="Milkshake"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🥤</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Milkshake</span>
+              <span class="menu-card-price">₦2,000 – ₦2,500</span>
+            </div>
+            <p class="menu-card-desc">
+              Vanilla — ₦2,000 &nbsp;|&nbsp; Chocolate — ₦2,000<br/>
+              Lotus Biscoff — ₦2,500 &nbsp;|&nbsp; Oreo — ₦2,500
+            </p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Milkshake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /drinks -->
+
+
+      <!-- ── SANDWICHES & WRAPS ── -->
+      <div class="menu-category" id="tab-wraps">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="breakfast-sandwich.jpg" alt="Breakfast Sandwich"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🥪</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Breakfast Sandwich</span>
+              <span class="menu-card-price">₦2,500</span>
+            </div>
+            <p class="menu-card-desc">A hearty morning sandwich to start your day right.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Breakfast%20Sandwich%20-%20%E2%82%A62%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="breakfast-wrap.jpg" alt="Breakfast Wrap"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🌯</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Breakfast Wrap</span>
+              <span class="menu-card-price">₦3,000</span>
+            </div>
+            <p class="menu-card-desc">Warm, filled breakfast wrap — the perfect grab-and-go meal.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Breakfast%20Wrap%20-%20%E2%82%A63%2C000" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="cheesesteak.jpg" alt="Cheesesteak"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🥩</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Cheesesteak</span>
+              <span class="menu-card-price">₦5,500</span>
+            </div>
+            <p class="menu-card-desc">Juicy, cheesy steak sandwich — an absolute crowd favourite.</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Cheesesteak%20-%20%E2%82%A65%2C500" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="shawarma-beef.jpg" alt="Shawarma Beef"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🌯</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Shawarma — Beef</span>
+              <span class="menu-card-price">₦2,000 – ₦2,500</span>
+            </div>
+            <p class="menu-card-desc">
+              Without sausage — ₦2,000 &nbsp;|&nbsp; Single sausage — ₦2,300<br/>
+              Double sausage — ₦2,500
+            </p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Shawarma%20(Beef)" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="shawarma-chicken.jpg" alt="Shawarma Chicken"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>🌯</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Shawarma — Chicken</span>
+              <span class="menu-card-price">₦3,000 – ₦3,500</span>
+            </div>
+            <p class="menu-card-desc">
+              Without sausage — ₦3,000 &nbsp;|&nbsp; Single sausage — ₦3,300<br/>
+              Double sausage — ₦3,500
+            </p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Shawarma%20(Chicken)" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /wraps -->
+
+
+      <!-- ── CUSTOM CAKES ── -->
+      <div class="menu-category" id="tab-cakes">
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="bento-cake.jpg" alt="Bento Cake"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>🎂</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">Bento Cakes (Single Layer)</span>
+              <span class="menu-card-price">₦7,000 – ₦14,000</span>
+            </div>
+            <p class="menu-card-desc">
+              4 inches — ₦7,000 &nbsp;|&nbsp; 5 inches — ₦10,000<br/>
+              6 inches round — ₦12,000 &nbsp;|&nbsp; 6 inches heart — ₦14,000
+            </p>
+            <p class="menu-card-note">* Add-ons (candles, tiaras, toppers) priced separately</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%20Bento%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="6inch-round.jpg" alt="6 Inch Round Cake"/></div> -->
+          <div class="menu-card-image" style="background:#FFE0B2;"><span>🎂</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">6 Inch Round Cake</span>
+              <span class="menu-card-price">₦23,000 – ₦35,000</span>
+            </div>
+            <p class="menu-card-desc">2 layers — ₦23,000 &nbsp;|&nbsp; 3 layers — ₦35,000</p>
+            <p class="menu-card-note">* Add-ons priced separately</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%206%20Inch%20Round%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="7inch-round.jpg" alt="7 Inch Round Cake"/></div> -->
+          <div class="menu-card-image" style="background:#FFCCBC;"><span>🎂</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">7 Inch Round Cake</span>
+              <span class="menu-card-price">₦33,000 – ₦42,000</span>
+            </div>
+            <p class="menu-card-desc">2 layers — ₦33,000 &nbsp;|&nbsp; 3 layers — ₦38,000 &nbsp;|&nbsp; 4 layers — ₦42,000</p>
+            <p class="menu-card-note">* Add-ons priced separately</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%207%20Inch%20Round%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="6inch-heart.jpg" alt="6 Inch Heart Cake"/></div> -->
+          <div class="menu-card-image" style="background:#F8BBD0;"><span>💝</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">6 Inch Heart Cake</span>
+              <span class="menu-card-price">₦27,000 – ₦38,000</span>
+            </div>
+            <p class="menu-card-desc">2 layers — ₦27,000 &nbsp;|&nbsp; 3 layers — ₦38,000</p>
+            <p class="menu-card-note">* Add-ons priced separately</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%206%20Inch%20Heart%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+        <div class="menu-card">
+          <!-- PLACEHOLDER: replace with <div class="menu-card-image"><img src="8inch-heart.jpg" alt="8 Inch Heart Cake"/></div> -->
+          <div class="menu-card-image" style="background:#FFB3BA;"><span>💝</span></div>
+          <div class="menu-card-body">
+            <div class="menu-card-header">
+              <span class="menu-card-name">8 Inch Heart Cake</span>
+              <span class="menu-card-price">₦18,000 – ₦47,000</span>
+            </div>
+            <p class="menu-card-desc">1 layer — ₦18,000 &nbsp;|&nbsp; 2 layers — ₦35,000 &nbsp;|&nbsp; 3 layers — ₦47,000</p>
+            <p class="menu-card-note">* Add-ons priced separately</p>
+            <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20pre-order%3A%208%20Inch%20Heart%20Cake" target="_blank" class="btn-primary">Order Now</a>
+          </div>
+        </div>
+
+      </div><!-- /cakes -->
+
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       CONTACT SECTION
+  ============================================================ -->
+  <section class="contact section" id="contact">
+    <div class="container">
+      <h2 class="section-title">Get in Touch</h2>
+      <div class="title-underline"></div>
+      <p class="section-subtitle">
+        Ready to place a pre-order or have a question? Reach us on any of the channels below.
+      </p>
+      <div class="contact-grid">
+
+        <a href="https://wa.me/2347019793096?text=Hi%20Cafe%20Joy!%20I%27d%20like%20to%20place%20a%20pre-order." target="_blank" class="contact-card">
+          <div class="contact-icon">💬</div>
+          <h3>WhatsApp</h3>
+          <p>Chat with us directly — fastest way to order</p>
+          <span class="btn-primary">Open WhatsApp</span>
+        </a>
+
+        <a href="tel:07019793096" class="contact-card">
+          <div class="contact-icon">📞</div>
+          <h3>Call Us</h3>
+          <p>07019793096</p>
+          <span class="btn-primary">Call Now</span>
+        </a>
+
+        <a href="https://www.tiktok.com/@cafejoy.ng" target="_blank" class="contact-card">
+          <div class="contact-icon">🎵</div>
+          <h3>TikTok</h3>
+          <p>@cafejoy.ng — see our food in action</p>
+          <span class="btn-primary">Follow Us</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer>
+    <img src="logo.png" alt="Cafe Joy" class="footer-logo" onerror="this.style.display='none'" />
+    <p style="font-family:'Paytone One',sans-serif; font-size:1.1rem; color:white; margin-bottom:6px;">Cafe Joy</p>
+    <p>Karshi, Abuja &nbsp;·&nbsp; Pre-orders only &nbsp;·&nbsp; 24 hours in advance</p>
+    <p style="margin-top:12px;" class="footer-love">Taste the Joy in Every Bite ❤️</p>
+  </footer>
+
+
+  <!--
+  ============================================================
+  JAVASCRIPT — two small features
+
+  1. HAMBURGER MENU (mobile only)
+     Toggles the "open" class on #navLinks when the button is clicked.
+     The CSS shows/hides the menu based on whether that class exists.
+
+  2. MENU TABS
+     Each tab button has a data-tab="breakfast" attribute.
+     Clicking it removes .active from everything, then adds .active
+     to the button AND to the matching div with id="tab-breakfast".
+     The CSS hides all .menu-category divs except the one with .active.
+  ============================================================
+  -->
+  <script>
+    // Hamburger menu
+    const navToggle = document.getElementById('navToggle');
+    const navLinks  = document.getElementById('navLinks');
+    navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(link =>
+      link.addEventListener('click', () => navLinks.classList.remove('open'))
+    );
+
+    // Menu tabs
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.menu-category').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+      });
+    });
+  </script>
+
+</body>
+</html>
